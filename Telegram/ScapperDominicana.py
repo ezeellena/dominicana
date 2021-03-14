@@ -159,6 +159,7 @@ if __name__ == "__main__":
                 try:
                     if len(sys.argv) > 1:
                         Id_Provincia = sys.argv[1]
+                    #Id_Provincia = "5"
                     mycursor = mydb.cursor()
                     sql = "SELECT url, url_rss, id_provincia FROM portales where id_provincia = "+Id_Provincia+""
                     mycursor.execute(sql)
@@ -169,47 +170,63 @@ if __name__ == "__main__":
                                                      'Firefox/55.0'}
                             links = get_all_website_links(portal[0])
                             links = list(links)
-                            linksNUevos = []
-
                             for link in links:
-
-                                response = requests.get(link, headers=headers).text
                                 try:
-                                    Titulo = obtenerTitulo(response)
-                                except Exception as e:
-                                    print("No se pudo obtener el Título ", e)
-                                try:
-                                    Descripcion = obtenerDescripcion(response)
-                                except Exception as e:
-                                    print("No se pudo obtener la Descripcion ", e)
-                                try:
-                                    Imagen = obtenerImagen(response)
-                                except Exception as e:
-                                    print("No se pudo obtener la Imagen ", e)
-
-                                if not Titulo or not Descripcion or not Imagen:
-                                    try:
-                                        mycursorEze = mydbEze.cursor()
-                                        sql = "INSERT INTO portales_no_andan_scrap_dominicana (url_portal, url_link) " \
-                                              "VALUES (%s, %s) "
-                                        val = (portal[0], link)
-                                        mycursorEze.execute(sql, val)
-                                        mydbEze.commit()
-                                        print("insertó correctamente el link: " + link + "")
-                                    except Exception as e:
-                                        print("El Link ya fue guardado: " + link + "" + str(e.msg) + "")
-
-                                try:
-                                    fecha = obtenerFechaPublicacion(response)
                                     mycursor = mydb.cursor()
-                                    sql = "INSERT INTO todas_las_noticias (link,fecha,titulo,copete,texto,medio,provincia,imagen) " \
-                                          "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) "
-                                    val = (link, fecha, Titulo, Descripcion, "", portal[0], portal[2],Imagen)
-                                    mycursor.execute(sql, val)
-                                    mydb.commit()
-                                    print("insertó correctamente el link: " + link + "")
+                                    innoticia = "SELECT * FROM todas_las_noticias where link = '" + link + "'"
+                                    mycursor.execute(innoticia)
+                                    innoticia = mycursor.fetchall()
                                 except Exception as e:
-                                    print("El Link ya fue guardado: " + link + "" + str(e.msg) + "")
+                                    print("")
+                                try:
+                                    mycursor = mydb.cursor()
+                                    innoanda = "select * from portales_no_andan_scrap_dominicana WHERE url_link = '" + link + "'"
+                                    mycursor.execute(innoanda)
+                                    innoanda = mycursor.fetchall()
+                                except Exception as e:
+                                    print("")
+                                cantidad = len(innoticia)
+                                cantidad2 = len(innoanda)
+                                if cantidad != 0 or cantidad2 != 0:
+                                    print("ya se encuentra enla base")
+                                else:
+                                    response = requests.get(link, headers=headers).text
+                                    try:
+                                        Titulo = obtenerTitulo(response)
+                                    except Exception as e:
+                                        print("No se pudo obtener el Título ", e)
+                                    try:
+                                        Descripcion = obtenerDescripcion(response)
+                                    except Exception as e:
+                                        print("No se pudo obtener la Descripcion ", e)
+                                    try:
+                                        Imagen = obtenerImagen(response)
+                                    except Exception as e:
+                                        print("No se pudo obtener la Imagen ", e)
+
+                                    if not Titulo or not Descripcion or not Imagen:
+                                        try:
+                                            mycursorEze = mydbEze.cursor()
+                                            sql = "INSERT INTO portales_no_andan_scrap_dominicana (url_portal, url_link) " \
+                                                  "VALUES (%s, %s) "
+                                            val = (portal[0], link)
+                                            mycursorEze.execute(sql, val)
+                                            mydbEze.commit()
+                                            print("insertó correctamente el link: " + link + "")
+                                        except Exception as e:
+                                            print("El Link ya fue guardado: " + link + "" + str(e.msg) + "")
+                                    else:
+                                        try:
+                                            fecha = obtenerFechaPublicacion(response)
+                                            mycursor = mydb.cursor()
+                                            sql = "INSERT INTO todas_las_noticias (link,fecha,titulo,copete,texto,medio,provincia,imagen) " \
+                                                  "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) "
+                                            val = (link, fecha, Titulo, Descripcion, "", portal[0], portal[2],Imagen)
+                                            mycursor.execute(sql, val)
+                                            mydb.commit()
+                                            print("insertó correctamente el link: " + link + "")
+                                        except Exception as e:
+                                            print("El Link ya fue guardado: " + link + "" + str(e.msg) + "")
 
                         except Exception as e:
                             print("Error al ejecutar la consulta")
