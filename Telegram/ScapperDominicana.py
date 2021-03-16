@@ -159,7 +159,7 @@ if __name__ == "__main__":
                 try:
                     if len(sys.argv) > 1:
                         Id_Provincia = sys.argv[1]
-                    #Id_Provincia = "5"
+                    Id_Provincia = "5"
                     mycursor = mydb.cursor()
                     sql = "SELECT url, url_rss, id_provincia FROM portales where id_provincia = "+Id_Provincia+""
                     mycursor.execute(sql)
@@ -204,7 +204,7 @@ if __name__ == "__main__":
                                     except Exception as e:
                                         print("No se pudo obtener la Imagen ", e)
 
-                                    if not Titulo or not Descripcion or not Imagen:
+                                    if not Titulo or not Descripcion:
                                         try:
                                             mycursorEze = mydbEze.cursor()
                                             sql = "INSERT INTO portales_no_andan_scrap_dominicana (url_portal, url_link) " \
