@@ -119,7 +119,7 @@ if __name__ == "__main__":
                 try:
                     if len(sys.argv) > 1:
                         Id_Provincia = sys.argv[1]
-                    Id_Provincia = "5"
+                    #Id_Provincia = "5"
                     mycursor = mydb.cursor()
                     sql = "SELECT url, url_rss, id_provincia FROM portales where id_provincia = "+Id_Provincia+" order by  url desc"
                     mycursor.execute(sql)
