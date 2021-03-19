@@ -227,7 +227,6 @@ if __name__ == "__main__":
                                             print("insertó correctamente el link: " + link + "")
                                         except Exception as e:
                                             print("El Link ya fue guardado: " + link + "" + str(e.msg) + "")
-
                         except Exception as e:
                             print("Error al ejecutar la consulta")
                 except Exception as e:
