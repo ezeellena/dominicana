@@ -1,5 +1,4 @@
-from datetime import time
-
+import time
 import requests
 import sys
 import mysql.connector
@@ -45,11 +44,7 @@ def enviar_noticias(resultado,ID_GRUPO,tema):
 
     except Exception as e:
         print(" 279 - enviar ", e)
-def corresponde_procesar_id(k, terminacion_id):
-    if k[-2:] == terminacion_id:
-        return True
-    else:
-        return False
+
 if __name__ == '__main__':
 
         try:
