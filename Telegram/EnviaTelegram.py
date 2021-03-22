@@ -80,6 +80,7 @@ if __name__ == '__main__':
                                     cursor.execute(sql_select_Query)
                                     records = cursor.fetchall()
                                     resultado.extend(records)
+                                    mydb.commit()
                                 except Exception as e:
                                     print("error mysql: " + str(e))
                                 Temas = tema["descripcion"]
