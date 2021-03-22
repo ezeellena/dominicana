@@ -1,3 +1,4 @@
+import logging
 import time
 import requests
 import sys
@@ -87,7 +88,13 @@ if __name__ == '__main__':
                 except Exception as e:
                     print("error: " + str(e))
                     time.sleep(2)
+                    logging.basicConfig(filename='logs.log',
+                                        filemode='w',
+                                        level=logging.INFO)
                     continue
         except Exception as e:
             print("error ultimo: " + str(e))
             time.sleep(2)
+            logging.basicConfig(filename='logs.log',
+                                filemode='w',
+                                level=logging.INFO)
