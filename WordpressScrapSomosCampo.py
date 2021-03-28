@@ -15,11 +15,11 @@ conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};'
                       'Trusted_Connection=yes;')
 """
 conn = mysql.connector.connect(
-  host="10.3.0.125",
+  host="167.86.120.98",
   port="3307",
   database="test_portales",
   user="eze_ellena",
-  password="L9vMKWedYEzcBxdy"
+  password="c3hdyX8Jvnua5ZBr"
 )
 
 def is_valid(url):
@@ -190,6 +190,13 @@ if __name__ == "__main__":
                     links = get_all_website_links(link)
                     links = list(links)
                     for link in links:
+                        try:
+                            mycursor = conn.cursor()
+                            innoticia = "SELECT * FROM todas_las_noticias where link = '" + link + "'"
+                            mycursor.execute(innoticia)
+                            innoticia = mycursor.fetchall()
+                        except Exception as e:
+                            print("")
                         response = requests.get(link, headers=headers).text
                         try:
                             Titulo = obtenerTitulo(response)
@@ -233,6 +240,15 @@ if __name__ == "__main__":
                                 r = requests.post(url + '/posts', headers=headers, json=post)
 
                                 print('Your post is published on ' + json.loads(r.content.decode('utf-8'))['link'])
+
+                                try:
+                                    mycursor = conn.cursor()
+                                    sql = "INSERT INTO noticias_enviadas_wordpress (link, titulo, descripcion,tema,campaña,nombreWordPress) VALUES (%s, %s, %s, %s, %s, %s)"
+                                    val = (link, Titulo,Descripcion,"","",url)
+                                    mycursor.execute(sql, val)
+                                    Portales = mycursor.fetchall()
+                                except Exception as e:
+                                    print("Error al Obtener portales ", e)
                             except Exception as e:
                                 print("Error al Obtener portales ", e)
                 except Exception as e:
