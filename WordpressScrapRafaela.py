@@ -16,11 +16,11 @@ conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};'
                       'Trusted_Connection=yes;')
 """
 conn = mysql.connector.connect(
-  host="10.3.0.125",
+  host="167.86.120.98",
   port="3307",
   database="test_portales",
   user="eze_ellena",
-  password="L9vMKWedYEzcBxdy"
+  password="c3hdyX8Jvnua5ZBr"
 )
 
 def is_valid(url):
@@ -112,12 +112,44 @@ def obtenerImagen(response):
 def obtenerTextoCompleto(response):
 
     try:
-        TextoCompleto = BeautifulSoup(response, "html.parser").find("div", {"class": "infinite-single-article-content"})
+        TextoCompleto = BeautifulSoup(response, "html.parser").find("div", {"class": "detalle"})
         TextoCompleto = str(TextoCompleto.contents)
         TextoCompleto = TextoCompleto.replace(", ","").replace("]","").replace("[","")
         return TextoCompleto
     except Exception as e:
         print("No se pudo obtener la Imagen ", e)
+    try:
+        TextoCompleto = BeautifulSoup(response, "html.parser").find("article")
+        TextoCompleto = str(TextoCompleto.contents)
+        TextoCompleto = TextoCompleto.replace(", ","").replace("]","").replace("[","")
+        return TextoCompleto
+    except Exception as e:
+        print("No se pudo obtener la Imagen ", e)
+
+
+def obtenerFechaPublicacion(response):
+
+    try:
+        FechaPublicacion = BeautifulSoup(response, "html.parser").find("meta", {"property": "og:updated_time"})["content"]
+        return FechaPublicacion
+    except Exception as e:
+        print("No se pudo obtener la FechaPublicacion ", e)
+    try:
+        FechaPublicacion = BeautifulSoup(response, "html.parser").find("meta", {"property": "article:published_time"})["content"]
+        return FechaPublicacion
+    except Exception as e:
+        print("No se pudo obtener la FechaPublicacion ", e)
+    try:
+        FechaPublicacion = BeautifulSoup(response, "html.parser").find("p", {"data-v-da468678 style": "margin-top: 16px;"}).text
+        return FechaPublicacion
+    except Exception as e:
+        print("No se pudo obtener la FechaPublicacion ", e)
+def obtenerCategoria(response):
+    try:
+        Categoria = BeautifulSoup(response, "html.parser").find("span", {"data-v-da468678 class": "seccion"}).text
+        return Categoria
+    except Exception as e:
+        print("No se pudo obtener la Categoria ", e)
 def get_all_website_links(Portal):
     """
     Returns all URLs that is found on `url` in which it belongs to the same website
@@ -156,7 +188,7 @@ def get_all_website_links(Portal):
 if __name__ == "__main__":
     try:
         while True:
-            Portales = ["https://www.radiorafaela.com.ar/"]
+            Portales = ["https://www.radiorafaela.com.ar/", "https://rafaelanoticias.com/"]
             for link in Portales:
                 try:
 
@@ -166,6 +198,16 @@ if __name__ == "__main__":
                     links = get_all_website_links(link)
                     links = list(links)
                     for link in links:
+                        try:
+                            mycursor = conn.cursor()
+                            innoticia = "SELECT * FROM noticias_enviadas_wordpress where link = '" + link + "'"
+                            mycursor.execute(innoticia)
+                            innoticia = mycursor.fetchall()
+                        except Exception as e:
+                            print("")
+                        cantidad = len(innoticia)
+                        if cantidad != 0:
+                            print("ya se publico")
                         response = requests.get(link, headers=headers).text
                         try:
                             Titulo = obtenerTitulo(response)
@@ -182,9 +224,17 @@ if __name__ == "__main__":
                         try:
                             TextoCompleto = obtenerTextoCompleto(response)
                         except Exception as e:
-                            print("No se pudo obtener la Imagen ", e)
+                            print("No se pudo obtener el TextoCompleto ", e)
+                        try:
+                            FechaPublicacion = obtenerFechaPublicacion(response)
+                        except Exception as e:
+                            print("No se pudo obtener la FechaPublicacion ", e)
+                        try:
+                            Categoria = obtenerCategoria(response)
+                        except Exception as e:
+                            print("No se pudo obtener la Categoria ", e)
 
-                        if not Titulo or not Descripcion or not Imagen or not TextoCompleto:
+                        if not Titulo or not Descripcion or not Imagen or not TextoCompleto or not Categoria or not FechaPublicacion:
                             continue
                         else:
                             try:
@@ -204,15 +254,15 @@ if __name__ == "__main__":
                                         'excerpt': 'Exceptional post!',
                                         'format': 'standard',
                                         'post_tag': ['Actualidad'],
-                                        'category': ['Actualidad']
+                                        'category': Categoria
                                         }
                                 r = requests.post(url + '/posts', headers=headers, json=post)
 
                                 print('Your post is published on ' + json.loads(r.content.decode('utf-8'))['link'])
                                 try:
                                     mycursor = conn.cursor()
-                                    sql = "INSERT INTO noticias_enviadas_wordpress (name, address) VALUES (%s, %s, %s)"
-                                    val = (link, url)
+                                    sql = "INSERT INTO noticias_enviadas_wordpress (link, titulo, descripcion,tema,campaña,nombreWordPress) VALUES (%s, %s, %s, %s, %s, %s)"
+                                    val = (link, Titulo,Descripcion,"","",url)
                                     mycursor.execute(sql, val)
                                     Portales = mycursor.fetchall()
                                 except Exception as e:
