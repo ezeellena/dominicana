@@ -9,13 +9,20 @@ app = Flask(__name__)
 @app.route('/Comentarios_bot',methods=["POST"])
 def postComentarios_bot():
 
+    data_comentarios_bot = request.json["message"]["chat"]["id"]
     TOKEN = '1722558802:AAEIR7zKm3Hku0kgBHHpnE5wVwSB8StBLnU'  # Ponemos nuestro TOKEN generado con el @BotFather
     mi_bot = telebot.TeleBot(TOKEN)  # Creamos nuestra instancia "mi_bot" a partir de ese TOKEN
-    token = requests.get(url="http://167.86.120.98:7676/tokenrasa").text
+
     chat_id =  request.json["message"]["chat"]["id"]
+
+    #token = requests.get(url="http://167.86.120.98:7676/tokenrasa").text
+    print(chat_id )
     text = request.json["message"]["text"]
     respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
-                                  data='{ "sender":"'+ token +'", "message":"' + text + '"}')
+                                  data='{ "sender":"'+ chat_id +'", "message":"' + text + '"}')
+    dictionary_items = respuesta.items()
+    for item in dictionary_items:
+        print(item)
     try:
         txt = respuesta.json()[0]["text"]
     except:
