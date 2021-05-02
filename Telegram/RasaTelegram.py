@@ -14,7 +14,7 @@ def postComentarios_bot():
         chat_id =  request.json["message"]["chat"]["id"]
         text = request.json["message"]["text"]
         respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
-                                      data='{ "sender":"'+ chat_id +'", "message":"' + text + '"}')
+                                      data='{ "sender":"'+ str(chat_id) +'", "message":"' + text + '"}')
         try:
             txt = respuesta.json()[0]["text"]
         except:
