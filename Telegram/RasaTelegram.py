@@ -15,11 +15,11 @@ def postComentarios_bot():
         text = request.json["message"]["text"]
         respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
                                       data='{ "sender":"'+ str(chat_id) +'", "message":"' + text + '"}')
+        txt = ''
         try:
             txt = respuesta.json()[0]["text"]
-        except:
-            mi_bot.send_message(chat_id,
-                                "envie /restart , luego del msjs Reiniciando envie la palabra Hola para empezar nuevamente la encuesta")
+        except Exception as e:
+            print(e)
         mi_bot.send_message(chat_id, txt)
     except Exception as e:
         print(e)
