@@ -18,9 +18,10 @@ def postComentarios_bot():
         txt = ''
         try:
             txt = respuesta.json()[0]["text"]
+            mytext = "\n".join(txt.split("<br>"))
         except Exception as e:
             print(e)
-        mi_bot.send_message(chat_id, txt)
+        mi_bot.send_message(chat_id, mytext)
     except Exception as e:
         print(e)
         return "error"
