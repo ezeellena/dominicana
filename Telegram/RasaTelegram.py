@@ -16,9 +16,14 @@ def postComentarios_bot():
         text = request.json["message"]["text"]
         print(request.json["message"]["text"])
         print(request.json["message"])
-        respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
+        if text == "/start":
+            text = 'alebotsalud'
+            respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
                                       data='{ "sender":"'+ str(chat_id) +'", "message":"' + text + '"}')
-        txt = ''
+        else:
+            respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
+                                      data='{ "sender":"' + str(chat_id) + '", "message":"' + text + '"}')
+
         try:
             txt = respuesta.json()[0]["text"]
             mytext = "\n".join(txt.split("<br>"))
