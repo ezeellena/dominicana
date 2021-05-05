@@ -18,14 +18,14 @@ def postComentarios_bot():
         print(request.json["message"])
         if text == "/start":
             text = 'alebotsalud'
-            respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
+            resp = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
                                       data='{ "sender":"'+ str(chat_id) +'", "message":"' + text + '"}')
             try:
-                txt = respuesta.json()[0]["text"]
-                mytext = "\n".join(txt.split("<br>"))
+                txt2 = resp.json()[0]["text"]
+                mytext2 = "\n".join(txt2.split("<br>"))
             except Exception as e:
                 print(e)
-            mi_bot.send_message(chat_id, mytext)
+            mi_bot.send_message(chat_id, mytext2)
 
         respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
                                       data='{ "sender":"' + str(chat_id) + '", "message":"' + text + '"}')
