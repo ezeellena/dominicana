@@ -29,13 +29,46 @@ def postComentarios_bot():
         else:
             respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
                                           data='{ "sender":"' + str(chat_id) + '", "message":"' + text + '"}')
-
             try:
                 txt = respuesta.json()[0]["text"]
+                print("------------")
+                print("------------")
+                print(txt)
+                print("------------")
+                print("------------")
                 mytext = "\n".join(txt.split("<br>"))
             except Exception as e:
                 print(e)
-            mi_bot.send_message(chat_id, mytext)
+            text = "/restart"
+            respuesta2 = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
+                                      data='{ "sender":"' + str(chat_id) + '", "message":"' + text + '"}')
+
+            try:
+                txt2 = respuesta2.json()[0]["text"]
+                print("------------")
+                print("------------")
+                print(txt2)
+                print("------------")
+                print("------------")
+            except Exception as e:
+                print(e)
+
+            text = 'alebotsalud'
+            respuesta3 = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
+                                       data='{ "sender":"' + str(chat_id) + '", "message":"' + text + '"}')
+            try:
+                txt3 = respuesta3.json()[0]["text"]
+                print("------------")
+                print("------------")
+                print(txt3)
+                print("------------")
+                print("------------")
+                mytext3 = "\n".join(txt.split("<br>"))
+            except Exception as e:
+                print(e)
+
+            textofinal = mytext + '\n' + mytext3
+            mi_bot.send_message(chat_id, textofinal)
     except Exception as e:
         print(e)
         return "error"
