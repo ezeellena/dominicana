@@ -26,16 +26,16 @@ def postComentarios_bot():
             except Exception as e:
                 print(e)
             mi_bot.send_message(chat_id, mytext2)
+        else:
+            respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
+                                          data='{ "sender":"' + str(chat_id) + '", "message":"' + text + '"}')
 
-        respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
-                                      data='{ "sender":"' + str(chat_id) + '", "message":"' + text + '"}')
-
-        try:
-            txt = respuesta.json()[0]["text"]
-            mytext = "\n".join(txt.split("<br>"))
-        except Exception as e:
-            print(e)
-        mi_bot.send_message(chat_id, mytext)
+            try:
+                txt = respuesta.json()[0]["text"]
+                mytext = "\n".join(txt.split("<br>"))
+            except Exception as e:
+                print(e)
+            mi_bot.send_message(chat_id, mytext)
     except Exception as e:
         print(e)
         return "error"
