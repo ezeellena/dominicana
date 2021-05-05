@@ -12,7 +12,10 @@ def postComentarios_bot():
         TOKEN = '1722558802:AAEIR7zKm3Hku0kgBHHpnE5wVwSB8StBLnU'  # Ponemos nuestro TOKEN generado con el @BotFather
         mi_bot = telebot.TeleBot(TOKEN)  # Creamos nuestra instancia "mi_bot" a partir de ese TOKEN
         chat_id =  request.json["message"]["chat"]["id"]
+        print(request.json["message"]["chat"]["id"])
         text = request.json["message"]["text"]
+        print(request.json["message"]["text"])
+        print(request.json["message"])
         respuesta = requests.post(url="http://167.86.120.98:5006/webhooks/rest/webhook",
                                       data='{ "sender":"'+ str(chat_id) +'", "message":"' + text + '"}')
         txt = ''
