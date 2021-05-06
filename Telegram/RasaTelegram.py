@@ -33,7 +33,8 @@ def postComentarios_bot():
                 print(e)
             mi_bot.send_message(chat_id, mytext2)
         """
-        if text is 'A' or text is 'B' or text is 'C' or text is 'D' or text is 'E' or text is 'F' or text is 'G' or text is 'H' or text is 'F':
+        if text is 'A' or text is 'B' or text is 'C' or text is 'D' or text is 'E' or text is 'F' or text is 'G' or text is 'H' or\
+                text is 'a' or text is 'b' or text is 'c' or text is 'd' or text is 'e' or text is 'f' or text is 'g' or text is 'h':
             respuesta = requests.post(url="http://167.86.120.98:5007/webhooks/rest/webhook",
                                           data='{ "sender":"' + str(chat_id) + '", "message":"' + text + '"}')
             try:
